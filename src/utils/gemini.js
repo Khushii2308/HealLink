@@ -17,17 +17,12 @@ const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 export async function getHealthAdvice(question) {
   try {
     const prompt = `
-You are an AI medical assistant. Based on the following question, return a structured JSON response with:
-- issue: (1-4 word possible condition)
-- urgency: (Low, Moderate, High)
-- advice: (2-3 sentences of helpful advice)
-- shouldSeeDoctor: (true or false)
+You are an AI medical assistant. Based on the following user question, respond ONLY in pure JSON format (no markdown, no commentary). Use this structure:
 
-Respond ONLY in this format:
 {
-  "issue": "...",
-  "urgency": "...",
-  "advice": "...",
+  "issue": "short condition name",
+  "urgency": "Low | Moderate | High",
+  "advice": "2-3 sentences of helpful advice",
   "shouldSeeDoctor": true/false
 }
 
@@ -39,24 +34,44 @@ User's question: ${question}
 
     console.log("🧠 Gemini Raw Response:", responseText);
 
-    // Try to parse the response
-    const parsed = JSON.parse(responseText);
+    // ✅ Strip code block formatting if present
+    const cleanJson = responseText
+      .replace(/```json|```/g, '')
+      .trim();
 
-    // Return structured object with fallbacks
+    let parsed;
+    try {
+      parsed = JSON.parse(cleanJson);
+    } catch (err) {
+      console.error("⚠️ Failed to parse cleaned Gemini JSON:", cleanJson);
+      throw new Error("Invalid response format from AI");
+    }
+
+    // ✅ Validate and return structured data
+    const issue = parsed.issue?.trim();
+    const urgency = parsed.urgency?.trim();
+    const advice = parsed.advice?.trim();
+    const shouldSeeDoctor = parsed.shouldSeeDoctor === true;
+
+    if (!issue || !advice) {
+      throw new Error("Incomplete data in Gemini response");
+    }
+
     return {
-      issue: parsed.issue || "General Health Concern",
-      urgency: parsed.urgency || "Unknown",
-      advice: parsed.advice || "Please rest, stay hydrated, and consult a doctor if symptoms worsen.",
-      shouldSeeDoctor: parsed.shouldSeeDoctor ?? true,
+      issue,
+      urgency,
+      advice,
+      shouldSeeDoctor,
     };
 
   } catch (err) {
     console.error("❌ Error from Gemini:", err.message);
 
+    // ✅ Safe fallback response with backtick quotes to fix syntax
     return {
       issue: "Health Check Failed",
       urgency: "Unknown",
-      advice: "We couldn't analyze your question at the moment. Please try again or consult a medical professional.",
+      advice: `We couldn't analyze your question at the moment. Please try again or consult a medical professional.`,
       shouldSeeDoctor: true,
     };
   }
