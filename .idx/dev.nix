@@ -3,8 +3,6 @@
   packages = [
     pkgs.nodejs_20
   ];
-  env = {    
-    GOOGLE_GENAI_API_KEY = "AIzaSyAOEhINBmxFFNjPC3Xj5DLdlgtPvBB0Xt4"; 
   };
   idx.extensions = [
     "svelte.svelte-vscode"
