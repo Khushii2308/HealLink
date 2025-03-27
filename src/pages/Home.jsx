@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react'
+// src/pages/Home.jsx
+import { useState, useRef, useEffect } from 'react'
 import {
   Box,
   Container,
@@ -20,15 +21,21 @@ import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { fetchHealthAdvice } from '../utils/gemini'
 
 const Home = ({ toggleTheme, mode }) => {
   const [language, setLanguage] = useState('English')
   const [question, setQuestion] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [consentOpen, setConsentOpen] = useState(false)
+  const [dailyAdvice, setDailyAdvice] = useState('')
   const navigate = useNavigate()
   const recognitionRef = useRef(null)
   const theme = useTheme()
+
+  useEffect(() => {
+    fetchHealthAdvice().then(setDailyAdvice).catch(console.error)
+  }, [])
 
   const doctors = [
     {
@@ -56,8 +63,6 @@ const Home = ({ toggleTheme, mode }) => {
       verified: false,
     },
   ]
-
-  const dailyHealthAdvice = "Stay hydrated and take a short walk every hour to keep your body active and mind fresh."
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value)
@@ -128,15 +133,7 @@ const Home = ({ toggleTheme, mode }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Header & Theme Toggle */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 4,
-          }}
-        >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Typography variant="h4" fontWeight="bold">
             HealLink
           </Typography>
@@ -145,19 +142,15 @@ const Home = ({ toggleTheme, mode }) => {
           </IconButton>
         </Box>
 
-        {/* Language Selector */}
-        <Select
-          value={language}
-          onChange={handleLanguageChange}
-          fullWidth
-          size="small"
-          sx={{ mb: 3 }}
-        >
+        <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary', fontStyle: 'italic' }}>
+          {dailyAdvice || 'Loading daily advice...'}
+        </Typography>
+
+        <Select value={language} onChange={handleLanguageChange} fullWidth size="small" sx={{ mb: 3 }}>
           <MenuItem value="English">English</MenuItem>
           <MenuItem value="Hindi">हिंदी</MenuItem>
         </Select>
 
-        {/* Input Field */}
         <Box sx={{ position: 'relative', mb: 3 }}>
           <TextField
             fullWidth
@@ -169,43 +162,22 @@ const Home = ({ toggleTheme, mode }) => {
             variant="outlined"
           />
           <IconButton
-            sx={{
-              position: 'absolute',
-              right: 8,
-              bottom: 8,
-              color: isRecording ? 'error.main' : 'primary.main',
-            }}
+            sx={{ position: 'absolute', right: 8, bottom: 8, color: isRecording ? 'error.main' : 'primary.main' }}
             onClick={handleVoiceInput}
           >
             <MicIcon />
           </IconButton>
         </Box>
 
-        {/* Submit & Connect Button */}
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={handleGetAdvice}
-          disabled={!question.trim()}
-        >
+        <Button variant="contained" fullWidth onClick={handleGetAdvice} disabled={!question.trim()}>
           Get Advice
         </Button>
 
-        <Button
-          variant="outlined"
-          fullWidth
-          sx={{ mt: 2 }}
-          onClick={() => navigate('/remote-doctor')}
-        >
+        <Button variant="outlined" fullWidth sx={{ mt: 2 }} onClick={() => navigate('/remote-doctor')}>
           Connect to a Doctor
         </Button>
 
-        {/* Top Doctors Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.7 }}>
           <Typography variant="h6" sx={{ mt: 5, mb: 2 }}>
             👨‍⚕️ Top Doctors
           </Typography>
@@ -221,9 +193,7 @@ const Home = ({ toggleTheme, mode }) => {
                     p: 2,
                     cursor: 'pointer',
                     transition: '0.3s',
-                    '&:hover': {
-                      boxShadow: 3,
-                    },
+                    '&:hover': { boxShadow: 3 },
                   }}
                 >
                   <Typography variant="subtitle1" fontWeight="bold">
@@ -233,13 +203,11 @@ const Home = ({ toggleTheme, mode }) => {
                     {doc.specialization}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    🗣️ {doc.languages.join(', ')}
+                    🕡️ {doc.languages.join(', ')}
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{
-                      color: doc.availability === 'Available' ? 'green' : 'orange',
-                    }}
+                    sx={{ color: doc.availability === 'Available' ? 'green' : 'orange' }}
                   >
                     {doc.availability}
                   </Typography>
@@ -249,43 +217,14 @@ const Home = ({ toggleTheme, mode }) => {
           </Grid>
         </motion.div>
 
-        {/* Daily Health Advice */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1 }}
-        >
-          <Typography variant="h6" sx={{ mt: 5, mb: 1 }}>
-            🌿 Daily Health Advice
-          </Typography>
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              backgroundColor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.100',
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
-            <Typography variant="body1">{dailyHealthAdvice}</Typography>
-          </Box>
-        </motion.div>
-
-        {/* Footer */}
-        <Typography
-          variant="body2"
-          sx={{ mt: 4, textAlign: 'center', color: 'text.secondary' }}
-        >
+        <Typography variant="body2" sx={{ mt: 4, textAlign: 'center', color: 'text.secondary' }}>
           Powered by HealLink AI
         </Typography>
 
-        {/* Privacy Consent Modal */}
         <Dialog open={consentOpen} onClose={() => setConsentOpen(false)}>
           <DialogTitle>Privacy Notice</DialogTitle>
           <DialogContent>
-            <Typography>
-              Do you consent to voice capture for healthcare advice?
-            </Typography>
+            <Typography>Do you consent to voice capture for healthcare advice?</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setConsentOpen(false)}>Decline</Button>
