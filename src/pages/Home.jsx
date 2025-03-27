@@ -13,6 +13,7 @@ import {
   DialogContent,
   DialogActions,
   useTheme,
+  Grid,
 } from '@mui/material'
 import MicIcon from '@mui/icons-material/Mic'
 import Brightness4Icon from '@mui/icons-material/Brightness4'
@@ -55,6 +56,8 @@ const Home = ({ toggleTheme, mode }) => {
       verified: false,
     },
   ]
+
+  const dailyHealthAdvice = "Stay hydrated and take a short walk every hour to keep your body active and mind fresh."
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value)
@@ -178,7 +181,7 @@ const Home = ({ toggleTheme, mode }) => {
           </IconButton>
         </Box>
 
-        {/* Submit Button */}
+        {/* Submit & Connect Button */}
         <Button
           variant="contained"
           fullWidth
@@ -206,42 +209,65 @@ const Home = ({ toggleTheme, mode }) => {
           <Typography variant="h6" sx={{ mt: 5, mb: 2 }}>
             👨‍⚕️ Top Doctors
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Grid container spacing={2}>
             {doctors.map((doc) => (
-              <Box
-                key={doc.id}
-                onClick={() => navigate(`/doctor/${doc.id}`)}
-                sx={{
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  borderRadius: 2,
-                  p: 2,
-                  cursor: 'pointer',
-                  transition: '0.3s',
-                  '&:hover': {
-                    boxShadow: 3,
-                  },
-                }}
-              >
-                <Typography variant="subtitle1" fontWeight="bold">
-                  {doc.name} {doc.verified && '✅'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {doc.specialization}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  🗣️ {doc.languages.join(', ')}
-                </Typography>
-                <Typography
-                  variant="body2"
+              <Grid item xs={12} sm={6} key={doc.id}>
+                <Box
+                  onClick={() => navigate(`/doctor/${doc.id}`)}
                   sx={{
-                    color: doc.availability === 'Available' ? 'green' : 'orange',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    borderRadius: 2,
+                    p: 2,
+                    cursor: 'pointer',
+                    transition: '0.3s',
+                    '&:hover': {
+                      boxShadow: 3,
+                    },
                   }}
                 >
-                  {doc.availability}
-                </Typography>
-              </Box>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {doc.name} {doc.verified && '✅'}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {doc.specialization}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    🗣️ {doc.languages.join(', ')}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: doc.availability === 'Available' ? 'green' : 'orange',
+                    }}
+                  >
+                    {doc.availability}
+                  </Typography>
+                </Box>
+              </Grid>
             ))}
+          </Grid>
+        </motion.div>
+
+        {/* Daily Health Advice */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 1 }}
+        >
+          <Typography variant="h6" sx={{ mt: 5, mb: 1 }}>
+            🌿 Daily Health Advice
+          </Typography>
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              backgroundColor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.100',
+              border: '1px solid',
+              borderColor: 'divider',
+            }}
+          >
+            <Typography variant="body1">{dailyHealthAdvice}</Typography>
           </Box>
         </motion.div>
 
