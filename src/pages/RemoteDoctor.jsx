@@ -16,19 +16,38 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  Collapse,
+  Divider,
 } from '@mui/material';
 import { Verified } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 const doctors = [
-  { name: 'Dr. Anjali Verma', specialty: 'General Physician', image: '/doctors/anjali.jpg', verified: true },
-  { name: 'Dr. Rohan Mehta', specialty: 'Cardiologist', image: '/doctors/rohan.jpg', verified: true },
-  { name: 'Dr. Pooja Sharma', specialty: 'Pediatrician', image: '/doctors/pooja.jpg', verified: false },
-  { name: 'Dr. Vikram Singh', specialty: 'Dermatologist', image: '/doctors/vikram.jpg', verified: true },
-  { name: 'Dr. Nisha Patel', specialty: 'Neurologist', image: '/doctors/nisha.jpg', verified: false },
-  { name: 'Dr. Rahul Das', specialty: 'Orthopedic Surgeon', image: '/doctors/rahul.jpg', verified: true },
-  { name: 'Dr. Meera Kapoor', specialty: 'Psychiatrist', image: '/doctors/meera.jpg', verified: true },
-  { name: 'Dr. Arjun Nair', specialty: 'ENT Specialist', image: '/doctors/arjun.jpg', verified: false },
+  {
+    name: 'Dr. Anjali Verma',
+    specialty: 'General Physician',
+    image: '/doctors/anjali.jpg',
+    verified: true,
+    bio: 'Experienced general physician with 10+ years of practice.',
+    availability: 'Mon-Fri, 9 AM - 5 PM',
+  },
+  {
+    name: 'Dr. Rohan Mehta',
+    specialty: 'Cardiologist',
+    image: '/doctors/rohan.jpg',
+    verified: true,
+    bio: 'Cardiology specialist focused on heart health and care.',
+    availability: 'Tue-Thu, 10 AM - 4 PM',
+  },
+  {
+    name: 'Dr. Pooja Sharma',
+    specialty: 'Pediatrician',
+    image: '/doctors/pooja.jpg',
+    verified: false,
+    bio: 'Loves working with children and promoting healthy growth.',
+    availability: 'Mon-Wed, 11 AM - 3 PM',
+  },
+  // Add other doctors as needed
 ];
 
 const RemoteDoctor = () => {
@@ -36,11 +55,14 @@ const RemoteDoctor = () => {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
-  // Get all unique specialties for dropdown
+  const handleExpand = (index) => {
+    setExpandedIndex((prev) => (prev === index ? null : index));
+  };
+
   const specialties = [...new Set(doctors.map((doc) => doc.specialty))];
 
-  // Apply all filters
   const filteredDoctors = doctors.filter((doctor) => {
     const matchesVerification = showVerifiedOnly ? doctor.verified : true;
     const matchesSearch =
@@ -52,7 +74,6 @@ const RemoteDoctor = () => {
 
   return (
     <Container sx={{ pt: 4 }}>
-      {/* Back to Home Button */}
       <Box sx={{ mb: 2 }}>
         <Button variant="outlined" onClick={() => navigate('/')}>
           &larr; Back to Home
@@ -63,7 +84,7 @@ const RemoteDoctor = () => {
         Connect with a Doctor
       </Typography>
 
-      {/* Filter Controls */}
+      {/* Filters */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
         <TextField
           label="Search by name or specialty"
@@ -72,7 +93,6 @@ const RemoteDoctor = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-
         <FormControl fullWidth>
           <InputLabel>Filter by Specialty</InputLabel>
           <Select
@@ -88,7 +108,6 @@ const RemoteDoctor = () => {
             ))}
           </Select>
         </FormControl>
-
         <FormControlLabel
           control={
             <Switch
@@ -101,13 +120,13 @@ const RemoteDoctor = () => {
         />
       </Box>
 
-      {/* Doctor Cards */}
+      {/* Doctors Grid */}
       <Grid container spacing={4}>
         {filteredDoctors.length > 0 ? (
           filteredDoctors.map((doctor, idx) => (
             <Grid item xs={12} sm={6} md={4} key={idx}>
-              <Card elevation={3}>
-                <CardContent style={{ textAlign: 'center' }}>
+              <Card elevation={3} onClick={() => handleExpand(idx)} sx={{ cursor: 'pointer' }}>
+                <CardContent sx={{ textAlign: 'center' }}>
                   <Avatar
                     src={doctor.image}
                     alt={doctor.name}
@@ -126,10 +145,30 @@ const RemoteDoctor = () => {
                       sx={{ mt: 1 }}
                     />
                   )}
-                  <Button variant="contained" sx={{ mt: 2 }} fullWidth>
-                    Book Consultation
-                  </Button>
                 </CardContent>
+
+                <Collapse in={expandedIndex === idx} timeout="auto" unmountOnExit>
+                  <Divider />
+                  <CardContent>
+                    <Typography variant="body2" gutterBottom>
+                      <strong>About:</strong> {doctor.bio}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      <strong>Availability:</strong> {doctor.availability}
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      sx={{ mt: 1 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        alert(`Consultation booked with ${doctor.name}`);
+                      }}
+                    >
+                      Book Consultation
+                    </Button>
+                  </CardContent>
+                </Collapse>
               </Card>
             </Grid>
           ))
