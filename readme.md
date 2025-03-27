@@ -1,73 +1,86 @@
-# HealLink - Your AI Health Assistant
+# 🩺 HealLink AI
 
-## Overview
+HealLink AI is a smart healthcare assistant that provides AI-driven health advice and doctor recommendations. It supports multilingual responses (English and Hindi), theme toggling (light/dark), and a clean animated UI. Built with React, MUI, Framer Motion, and Gemini AI.
 
-HealLink is a React-based web application designed to provide general health advice and facilitate remote doctor consultations, particularly for underserved communities. It leverages the Google Gemini AI to offer health assessments based on user input.
+## 🚀 Features
 
-## Features
+- 🔍 Ask health-related questions and get AI-generated assessments
+- 🌐 Translate responses to Hindi
+- 🌓 Toggle between dark and light themes
+- 📱 Responsive and mobile-friendly UI
+- 📅 Navigate to Doctor Booking (placeholder)
+- 🏠 Go back to Home or navigate to Health Tips from anywhere
 
-***AI-Powered Health Advice:** Provides health assessments and actionable advice using the Google Gemini API.
-***Remote Doctor Consultations:** Connects users with doctors for remote consultations.
-***Health Tips:** Offers daily health tips to promote healthy living.
-***Multi-Language Support:** Supports multiple languages, including English, Hindi, and Spanish.
-***User-Friendly Interface:** A clean and intuitive interface built with Material UI.
+## 🛠️ Tech Stack
 
-## Technologies Used
+- React (Vite)
+- Material UI (MUI)
+- Framer Motion
+- React Router
+- Google Gemini API (for AI health advice)
+- Google Cloud Translation API (for Hindi translation)
 
-***React:** A JavaScript library for building user interfaces.
-***Material UI (MUI):** A popular React UI framework for creating a consistent and visually appealing design.
-***React Router:** For navigation and routing within the application.
-***Google Gemini API:** For AI-powered health assessments.
-***Vite:** A fast build tool for modern web development.
+## 📂 Project Structure
 
-## Setup Instructions
+```
+src/
+├── App.jsx
+├── main.jsx
+├── components/
+│   └── AIResponse.jsx
+├── pages/
+│   ├── Home.jsx
+│   ├── DoctorPage.jsx
+│   └── Tips.jsx
+├── utils/
+│   ├── gemini.js
+│   └── translate.js
+└── assets/
+```
 
-1.**Clone the repository:**
+## 🔧 Getting Started
 
-    ```bash
-    git clone <repository-url>
-    cd HealLink
-    ```
+### 1. Clone the Repository
 
-2.  **Install dependencies:**
+```bash
+git clone https://github.com/your-username/healink-ai.git
+cd healink-ai
+```
 
-    ```bash
-    npm install
-    ```
+### 2. Install Dependencies
 
-3.  **Configure the environment variables:**
+```bash
+npm install
+```
 
-    *   Create a `.env` file in the root directory.
-    *   Add your Google Gemini API key:
+### 3. Add Your API Keys
 
-        ```
-        VITE_GEMINI_API_KEY=YOUR_GEMINI_API_KEY
-        ```
+Create a `.env` file and add:
 
-4.  **Run the application:**
+```
+VITE_GEMINI_API_KEY=your_gemini_api_key
+VITE_GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
+```
 
-    ```bash
-    npm run dev
-    ```
+### 4. Run the App
 
-    The application will be accessible at `http://localhost:3000`.
+```bash
+npm run dev
+```
 
-## API Rate Limiting
+## ✨ Screenshots
 
-To ensure fair usage and prevent abuse, the application implements rate limiting for the Google Gemini API. A minimum delay of 1 second is enforced between API calls.
+![HealLink Home](screenshots/home.png)
+![Health Assessment](screenshots/assessment.png)
 
-## Error Handling
+## 🧠 Inspiration
 
-The application includes comprehensive error handling to gracefully manage potential issues such as API errors, network problems, and invalid responses. User-friendly error messages are displayed to guide users in case of any issues.
+Built for a GDG hackathon to help underserved communities get fast, AI-driven health insights in multiple languages.
 
-## Future Enhancements
+## 📬 Feedback
 
-***Voice Input:** Implement voice input functionality for hands-free question input.
-***Translation Services:** Integrate translation services to support a wider range of languages.
-***Video Call/Chat Functionality:** Implement actual video call and chat features for remote doctor consultations.
-***User Authentication:** Add user authentication for personalized experiences and data privacy.
-***More Health Tips:** Add more health tips to provide users with more information.
+Pull requests and feedback are welcome!
 
-## Contributing
+---
 
-Contributions are welcome! Please feel free to submit pull requests or open issues to suggest improvements or report bugs.
+Made with ❤️ by Ayush Yadav
