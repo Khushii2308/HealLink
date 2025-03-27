@@ -181,6 +181,12 @@ const AIResponse = ({ toggleTheme, mode }) => {
           {isHindi ? 'डॉक्टर से बात करें' : 'Talk to a Doctor'}
         </Button>
       </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+       <Button variant="outlined" href="/">
+        {isHindi ? 'मुखपृष्ठ पर वापस जाएं' : 'Back to Home'}
+           </Button>
+            </Box>
+
 
       <Typography variant="body2" textAlign="center" sx={{ mt: 4, color: 'text.secondary' }}>
         Powered by HealLink AI

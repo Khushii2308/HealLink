@@ -1,13 +1,12 @@
 import React from 'react';
 import {
-  Container,
-  Typography,
-  Grid,
   Card,
   CardContent,
+  Typography,
+  Grid,
   Avatar,
-  Button,
   Chip,
+  Button,
 } from '@mui/material';
 import { Verified } from '@mui/icons-material';
 
@@ -62,49 +61,60 @@ const doctors = [
   },
 ];
 
-const RemoteDoctor = () => {
+const DoctorPage = () => {
   return (
-    <Container sx={{ pt: 4 }}>
-      <Typography variant="h4" fontWeight="bold" gutterBottom>
-        Connect with a Doctor
+    <div style={{ padding: '2rem' }}>
+      <Typography variant="h4" gutterBottom>
+        Available Doctors
       </Typography>
       <Grid container spacing={4}>
-        {doctors.map((doctor, idx) => (
-          <Grid item xs={12} sm={6} md={4} key={idx}>
-            <Card elevation={3}>
+        {doctors.map((doc, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card elevation={4}>
               <CardContent style={{ textAlign: 'center' }}>
                 <Avatar
-                  src={doctor.image}
-                  alt={doctor.name}
+                  src={doc.image}
+                  alt={doc.name}
                   sx={{ width: 80, height: 80, margin: '0 auto 1rem' }}
                 />
-                <Typography variant="h6">{doctor.name}</Typography>
+                <Typography variant="h6">{doc.name}</Typography>
                 <Typography variant="body2" color="textSecondary">
-                  {doctor.specialty}
+                  {doc.specialty}
                 </Typography>
-                {doctor.verified && (
-                  <Chip
-                    icon={<Verified />}
-                    label="Verified"
-                    color="success"
-                    size="small"
-                    sx={{ mt: 1 }}
-                  />
-                )}
+                <div style={{ marginTop: 10 }}>
+                  {doc.verified && (
+                    <Chip
+                      icon={<Verified />}
+                      label="Verified"
+                      color="success"
+                      size="small"
+                    />
+                  )}
+                </div>
                 <Button
-                  variant="contained"
-                  sx={{ mt: 2 }}
+                  variant="outlined"
                   fullWidth
+                  sx={{ marginTop: 2 }}
                 >
-                  Book Consultation
+                  Book Appointment
                 </Button>
               </CardContent>
             </Card>
           </Grid>
         ))}
-      </Grid>
-    </Container>
+        
+
+      </Grid><Button 
+  variant="outlined" 
+  size="small" 
+  href="/" 
+  sx={{ mt: 2, textTransform: 'none' }}
+>
+  ← Back to Home
+</Button>
+    </div>
+    
   );
 };
 
-export default RemoteDoctor;
+export default DoctorPage;
