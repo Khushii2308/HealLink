@@ -3,11 +3,6 @@
   packages = [
     pkgs.nodejs_20
   ];
-<<<<<<< HEAD
-  
-=======
-  };
->>>>>>> 3b2f71bf37fd0347fdcf4150063be5e0e381031b
   idx.extensions = [
     "svelte.svelte-vscode"
     "vue.volar"
