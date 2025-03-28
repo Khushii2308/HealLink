@@ -16,11 +16,13 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  AppBar,
+  Toolbar,
   Collapse,
   Divider,
 } from '@mui/material';
-import { Verified } from '@mui/icons-material';
-import {  useNavigate } from 'react-router-dom';
+import { Verified, DarkMode, LightMode } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const doctors = [
     {
@@ -87,13 +89,31 @@ const doctors = [
     },
   ];
 
-const RemoteDoctor = () => {
+const RemoteDoctor = ({ toggleTheme, mode }) => {
   const navigate = useNavigate();
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const theme=mode
+  
 
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+  const Header = () => {
+    return (
+      <AppBar position="static" color="transparent" elevation={0}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            HeaLink<span style={{ color: '#1976D2' }}>AI</span>
+          </Typography>
+          <Button color="inherit" onClick={handleBackToHome}>Back to Home</Button>
+        </Toolbar>
+      </AppBar>
+    );
+  };
+  
   const handleExpand = (index) => {
     setExpandedIndex((prev) => (prev === index ? null : index));
   };
@@ -110,15 +130,27 @@ const RemoteDoctor = () => {
   });
 
   return (
-    <Container sx={{ pt: 4 }}>
-      <Box sx={{ mb: 2 }}>
-        <Button variant="outlined" onClick={() => navigate('/')}>
-          &larr; Back to Home
-        </Button>
+    <Box>
+    <AppBar position="static" color="transparent" elevation={0}>
+    <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+      HeaLink<span style={{ color: '#1976D2' }}>AI</span>
+      </Typography>
       </Box>
-
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <LightMode sx={{ color: theme === 'light' ? '#FFA500' : 'grey.500' }} />
+            <Switch onChange={toggleTheme} checked={theme === 'dark'} />
+         <DarkMode sx={{ color: theme === 'dark' ? '#90CAF9' : 'grey.500' }} />
+        </Box>
+      <Button color="inherit" onClick={() => navigate('/')}>
+            Back to Home
+      </Button>
+    </Toolbar>
+    </AppBar>
+    <Container sx={{ pt: 4 }}>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
-        Connect with a Doctor
+        Connect with a Remote Doctor
       </Typography>
 
       {/* Filters */}
@@ -212,7 +244,8 @@ const RemoteDoctor = () => {
           </Typography>
         )}
       </Grid>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

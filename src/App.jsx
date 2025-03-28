@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+
+import React, { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { createTheme, ThemeProvider, CssBaseline } from '@mui/material'
+import { ThemeProvider, CssBaseline } from '@mui/material'
 import Home from './pages/Home'
 import AIResponse from './pages/AIResponse'
 import RemoteDoctor from './pages/RemoteDoctor'
 import DoctorPage from './pages/DoctorPage'
+import { lightTheme, darkTheme } from './theme'
 
 function App() {
   const [mode, setMode] = useState(() => localStorage.getItem('themeMode') || 'light')
@@ -15,30 +17,16 @@ function App() {
     localStorage.setItem('themeMode', newMode)
   }
 
-  const theme = createTheme({
-    palette: {
-      mode,
-      primary: {
-        main: '#1976d2',
-      },
-      background: {
-        default: mode === 'dark' ? '#121212' : '#f5f5f5',
-        paper: mode === 'dark' ? '#1e1e1e' : '#fff',
-      },
-    },
-    typography: {
-      fontFamily: 'Inter, sans-serif',
-    },
-  })
+  const theme = mode === 'light' ? lightTheme : darkTheme
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Routes>
-        <Route path="/" element={<Home toggleTheme={toggleTheme} mode={mode} />} />
-        <Route path="/ai-response" element={<AIResponse toggleTheme={toggleTheme} mode={mode} />} />
-        <Route path="/remote-doctor" element={<RemoteDoctor toggleTheme={toggleTheme} mode={mode} />} />
-        <Route path="/doctor/:id" element={<DoctorPage toggleTheme={toggleTheme} mode={mode} />} />
+        <Route path="/" element={<Home toggleTheme={toggleTheme} />} />
+        <Route path="/ai-response" element={<AIResponse toggleTheme={toggleTheme} mode={mode}/>} />
+        <Route path="/remote-doctor" element={<RemoteDoctor toggleTheme={toggleTheme} mode={mode}/>} />
+        <Route path="/doctor/:id" element={<DoctorPage />} />
       </Routes>
     </ThemeProvider>
   )

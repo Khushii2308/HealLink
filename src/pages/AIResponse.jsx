@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
+  useTheme,
+  Tooltip,
   Typography,
   Card,
   CardContent,
@@ -11,27 +13,33 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   IconButton,
-  useTheme,
-} from '@mui/material'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import Brightness4Icon from '@mui/icons-material/Brightness4'
-import Brightness7Icon from '@mui/icons-material/Brightness7'
-import { motion } from 'framer-motion'
-import { getHealthAdvice } from '../utils/gemini'
-import { translateToHindi } from '../utils/translate'
-
+  AppBar,
+  Toolbar
+} from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { motion } from 'framer-motion';
+import { getHealthAdvice } from '../utils/gemini';
+import { translateToHindi } from '../utils/translate';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { lightTheme, darkTheme } from '../theme';
+import Switch from '@mui/material/Switch';
+ 
 const AIResponse = ({ toggleTheme, mode }) => {
-  const location = useLocation()
-  const { question, language } = location.state || {}
+  const location = useLocation();
+  const { question, language } = location.state || {};
 
-  const [assessment, setAssessment] = useState(null)
+  const theme = mode === 'light' ? lightTheme : darkTheme;
+  const [assessment, setAssessment] = useState(null);
   const [translated, setTranslated] = useState(null)
   const [error, setError] = useState(null)
   const [selectedLang, setSelectedLang] = useState(language || 'English')
   const [isTranslating, setIsTranslating] = useState(false)
 
-  const theme = useTheme()
-  const isHindi = selectedLang === 'Hindi'
+  const isHindi = selectedLang === 'Hindi';
 
   useEffect(() => {
     async function fetchAdvice() {
@@ -52,7 +60,7 @@ const AIResponse = ({ toggleTheme, mode }) => {
     }
 
     fetchAdvice()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [question])
 
   const handleTranslation = async (data = assessment) => {
@@ -104,24 +112,34 @@ const AIResponse = ({ toggleTheme, mode }) => {
   }
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
-      {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FavoriteIcon sx={{ mr: 1, color: 'primary.main' }} />
-          <Typography variant="h4" fontWeight="bold">
-            HealLink
-          </Typography>
-        </Box>
+    
+    <ThemeProvider theme={theme}>
+        <CssBaseline />
+      
+      <Box>
+        <AppBar position="static" color="transparent" elevation={0}>
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+             <Typography variant="h6" sx={{ fontWeight: 'bold', p: 1 }}>
+              HeaLink<span style={{ color: '#1976D2' }}>AI</span>
+              </Typography>
+            </Box>
+           <Tooltip title="Toggle Dark/Light Theme">
+           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
+              
+              <FavoriteIcon sx={{ mr: 1, color: 'primary.main' }} />
+             
+              <LightModeIcon sx={{ color: theme.palette.mode === 'light' ? '#FFA500' : 'grey.500' }} />
+              <Switch onChange={toggleTheme} checked={theme.palette.mode === 'dark'} />
+              <DarkModeIcon sx={{ color: theme.palette.mode === 'dark' ? '#90CAF9' : 'grey.500' }} />
+            </Box>
+          </Tooltip>
 
-        <Box>
-          <IconButton onClick={toggleTheme} color="inherit">
-            {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-        </Box>
-      </Box>
-
-      {/* Language Toggle */}
+          </Toolbar>
+        </AppBar>
+        <Box sx={{ maxWidth: 800, mx: 'auto',  backgroundColor: 'background.default', color: 'text.primary', p: 2 }}>
+        
+          {/* Language Toggle */}
       <ToggleButtonGroup
         value={selectedLang}
         exclusive
@@ -191,8 +209,12 @@ const AIResponse = ({ toggleTheme, mode }) => {
       <Typography variant="body2" textAlign="center" sx={{ mt: 4, color: 'text.secondary' }}>
         Powered by HealLink AI
       </Typography>
-    </Box>
-  )
-}
+        </Box>
+      </Box>
+       
+    </ThemeProvider>
+     
+   );
+};
 
-export default AIResponse
+export default AIResponse;

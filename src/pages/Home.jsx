@@ -1,287 +1,173 @@
-import { useState, useRef } from 'react'
+import React, { useState } from 'react';
 import {
-  Box,
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  useTheme,
-} from '@mui/material'
-import MicIcon from '@mui/icons-material/Mic'
-import Brightness4Icon from '@mui/icons-material/Brightness4'
-import Brightness7Icon from '@mui/icons-material/Brightness7'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+  AppBar, Toolbar, Typography, Button, Box, Container,
+  TextField, IconButton, Grid, Switch, useTheme, Paper, Avatar, Tooltip
+} from '@mui/material';
+import MicIcon from '@mui/icons-material/Mic';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useNavigate } from 'react-router-dom';
 
-const Home = ({ toggleTheme, mode }) => {
-  const [language, setLanguage] = useState('English')
-  const [question, setQuestion] = useState('')
-  const [isRecording, setIsRecording] = useState(false)
-  const [consentOpen, setConsentOpen] = useState(false)
-  const navigate = useNavigate()
-  const recognitionRef = useRef(null)
-  const theme = useTheme()
+const Home = ({ toggleTheme }) => {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const [symptoms, setSymptoms] = useState('');
 
   const doctors = [
     {
-      id: '1',
+      id: 1,
       name: 'Dr. Emily Carter',
-      specialization: 'General Medicine',
-      languages: ['English', 'Hindi'],
-      availability: 'Available',
-      verified: true,
+      specialty: 'General Medicine',
+      status: 'Available',
+      img: 'https://randomuser.me/api/portraits/women/44.jpg',
     },
     {
-      id: '2',
+      id: 2,
       name: 'Dr. Sarah Wilson',
-      specialization: 'Pediatrics',
-      languages: ['English', 'Spanish'],
-      availability: 'Busy',
-      verified: true,
+      specialty: 'Pediatrics',
+      status: 'Busy',
+      img: 'https://randomuser.me/api/portraits/women/68.jpg',
     },
     {
-      id: '3',
+      id: 3,
       name: 'Dr. Raj Malhotra',
-      specialization: 'Cardiology',
-      languages: ['Hindi', 'English'],
-      availability: 'Available',
-      verified: false,
+      specialty: 'Cardiology',
+      status: 'Available',
+      img: 'https://randomuser.me/api/portraits/men/77.jpg',
     },
-  ]
-
-  const handleLanguageChange = (event) => {
-    setLanguage(event.target.value)
-  }
-
-  const handleQuestionChange = (event) => {
-    setQuestion(event.target.value)
-  }
-
-  const handleConsentAgree = () => {
-    setConsentOpen(false)
-    startVoiceRecognition()
-  }
-
-  const handleVoiceInput = () => {
-    setConsentOpen(true)
-  }
-
-  const startVoiceRecognition = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-
-    if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser.')
-      return
-    }
-
-    if (!recognitionRef.current) {
-      recognitionRef.current = new SpeechRecognition()
-      recognitionRef.current.lang = language === 'Hindi' ? 'hi-IN' : 'en-IN'
-      recognitionRef.current.interimResults = false
-      recognitionRef.current.maxAlternatives = 1
-
-      recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript
-        setQuestion((prev) => (prev ? `${prev} ${transcript}` : transcript))
-        setIsRecording(false)
-      }
-
-      recognitionRef.current.onerror = (event) => {
-        console.error('Speech recognition error:', event.error)
-        setIsRecording(false)
-      }
-
-      recognitionRef.current.onend = () => {
-        setIsRecording(false)
-      }
-    }
-
-    if (!isRecording) {
-      setIsRecording(true)
-      recognitionRef.current.start()
-    } else {
-      setIsRecording(false)
-      recognitionRef.current.stop()
-    }
-  }
+  ];
 
   const handleGetAdvice = () => {
-    if (question.trim()) {
-      navigate('/ai-response', { state: { question, language } })
+    if (symptoms.trim()) {
+      navigate('/ai-response', { state: { question: symptoms } });
     }
-  }
+  };
 
   return (
-    <Container maxWidth="sm" sx={{ pt: 4 }}>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {/* Header & Theme Toggle */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 4,
-            borderRadius: 4,
-            px: 2,
-            py: 1,
-            background: theme.palette.mode === 'dark'
-              ? 'linear-gradient(to right, #333, #444)'
-              : 'linear-gradient(to right, #e0f7fa, #b2ebf2)',
-            boxShadow: 6,
-          }}
-        >
-          <Typography variant="h4" fontWeight="bold">
-            HealLink
+    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', color: 'text.primary' }}>
+      {/* Header */}
+      <AppBar position="static" color="transparent" elevation={0}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            HeaLink<span style={{ color: '#1976D2' }}>AI</span>
           </Typography>
-          <IconButton onClick={toggleTheme} color="inherit">
-            {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-        </Box>
+          <Box>
+            <Button color="inherit" onClick={() => navigate('/')}>Home</Button>
+            <Button color="inherit" onClick={() => navigate('/remote-doctor')}>Remote Doctor</Button>
+          </Box>
+          <Tooltip title="Toggle Dark/Light Theme">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <LightModeIcon sx={{ color: theme.palette.mode === 'light' ? '#FFA500' : 'grey.500' }} />
+              <Switch onChange={toggleTheme} checked={theme.palette.mode === 'dark'} />
+              <DarkModeIcon sx={{ color: theme.palette.mode === 'dark' ? '#90CAF9' : 'grey.500' }} />
+            </Box>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
 
-        {/* AI Health Tip */}
-        <Box
-          sx={{
-            mb: 3,
-            p: 2,
-            borderRadius: 4,
-            backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f9f9f9',
-            boxShadow: 4,
-          }}
-        >
-          <Typography variant="body1" fontWeight="medium">
-            🧠 Simple, AI-generated daily health advice:
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Stay hydrated and take a 5-minute walk after every hour of sitting.
-          </Typography>
-        </Box>
+      {/* Hero Section */}
+      <Container maxWidth="md" sx={{ mt: 10, textAlign: 'center' }}>
+        <Typography variant="h2" gutterBottom>
+          Welcome to HeaLink AI
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 4 }}>
+          Revolutionizing access to healthcare with AI-powered doctor consultations.
+        </Typography>
+      </Container>
 
-        {/* Language Selector */}
-        <Select
-          value={language}
-          onChange={handleLanguageChange}
-          fullWidth
-          size="small"
-          sx={{ mb: 3, borderRadius: 3, boxShadow: 3 }}
-        >
-          <MenuItem value="English">English</MenuItem>
-          <MenuItem value="Hindi">हिंदी</MenuItem>
-        </Select>
-
-        {/* Input Field */}
-        <Box sx={{ position: 'relative', mb: 3 }}>
-          <TextField
-            fullWidth
-            multiline
-            rows={3}
-            placeholder="Type or speak your symptoms..."
-            value={question}
-            onChange={handleQuestionChange}
-            variant="outlined"
-            sx={{ borderRadius: 3, boxShadow: 3 }}
-          />
-          <IconButton
-            sx={{
-              position: 'absolute',
-              right: 8,
-              bottom: 8,
-              color: isRecording ? 'error.main' : 'primary.main',
-              boxShadow: 4,
-            }}
-            onClick={handleVoiceInput}
-          >
-            <MicIcon />
-          </IconButton>
-        </Box>
-
-        {/* Submit Button */}
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={handleGetAdvice}
-          disabled={!question.trim()}
-          sx={{
-            background: 'linear-gradient(to right, #26c6da, #00acc1)',
-            boxShadow: 6,
-            borderRadius: '2xl',
-          }}
-        >
-          Get Advice
-        </Button>
-
-        <Button
-          variant="outlined"
-          fullWidth
-          sx={{ mt: 2, borderRadius: '2xl', boxShadow: 4 }}
-          onClick={() => navigate('/remote-doctor')}
-        >
-          Connect to a Doctor
-        </Button>
-
-        {/* Top Doctors Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-        >
-          <Typography variant="h6" sx={{ mt: 5, mb: 2 }}>
-            👨‍⚕️ Top Doctors
-          </Typography>
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            {doctors.map((doc) => (
-              <Box
-                key={doc.id}
-                onClick={() => navigate(`/doctor/${doc.id}`)}
-                sx={{
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  borderRadius: '2xl',
-                  p: 2,
-                  cursor: 'pointer',
-                  transition: '0.3s',
-                  backgroundColor: theme.palette.mode === 'dark' ? '#2a2a2a' : '#fff',
-                  boxShadow: 3,
-                  '&:hover': {
-                    boxShadow: 6,
-                  },
+      {/* Main Content */}
+      <Box sx={{ p: 3 }}>
+        <Grid container spacing={4}>
+          {/* Left: AI Health Advice */}
+          <Grid item xs={12} md={8}>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+              <Typography variant="h5" sx={{ color: 'text.secondary', mb: 2 }}>
+                Daily Health Advice:
+              </Typography>
+              <Typography variant="body1" component="div" sx={{ mb: 2 }}>
+                    <ul style={{ paddingLeft: '1.2em', margin: 0 }}>
+                    <li>Stay hydrated and take a walk after sitting for an hour.</li>
+                    <li>Drink at least 8 glasses of water daily to stay hydrated.</li>
+                    <li>Get 7–9 hours of quality sleep every night for proper recovery.</li>
+                    <li>Take a 5-minute walk every hour if you sit for long periods.</li>
+                    <li>Eat colorful fruits and vegetables — they’re packed with antioxidants.</li>
+                    
+                   </ul>
+               </Typography>
+              <TextField
+                fullWidth
+                placeholder="Type or speak your symptoms..."
+                variant="outlined"
+                multiline
+                rows={4}
+                value={symptoms}
+                onChange={(e) => setSymptoms(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton>
+                      <MicIcon />
+                    </IconButton>
+                  ),
                 }}
-              >
-                <Typography variant="subtitle1" fontWeight="bold">
-                  {doc.name} {doc.verified && '✅'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {doc.specialization}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  🗣️ {doc.languages.join(', ')}
-                </Typography>
-                <Typography
-                  variant="body2"
+                sx={{ mb: 2 }}
+              />
+
+              <Button fullWidth variant="contained" sx={{ mb: 1 }} onClick={handleGetAdvice}>
+                GET ADVICE
+              </Button>
+              <Button fullWidth variant="outlined">
+                CONNECT TO A DOCTOR
+              </Button>
+            </Paper>
+          </Grid>
+
+          {/* Right: Top Doctors in a Box */}
+          <Grid item xs={12} md={4}>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Top Doctors
+              </Typography>
+              {doctors.map((doc) => (
+                <Paper
+                  key={doc.id}
+                  elevation={1}
                   sx={{
-                    color: doc.availability === 'Available' ? 'green' : 'orange',
-                    fontWeight: 'medium',
+                    display: 'flex',
+                    alignItems: 'center',
+                    p: 2,
+                    mb: 2,
+                    borderRadius: 2,
+                    backgroundColor: 'background.paper',
                   }}
                 >
-                  {doc.availability}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </motion.div>
-      </motion.div>
-    </Container>
-  )
-}
+                  <Avatar src={doc.img} alt={doc.name} sx={{ width: 56, height: 56, mr: 2 }} />
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                      {doc.name}{' '}
+                      <CheckCircleIcon
+                        fontSize="small"
+                        sx={{ color: 'green', verticalAlign: 'middle', ml: 0.5 }}
+                      />
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {doc.specialty}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: doc.status === 'Available' ? 'green' : 'orange' }}
+                    >
+                      {doc.status}
+                    </Typography>
+                  </Box>
+                </Paper>
+              ))}
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
+  );
+};
 
-export default Home
+export default Home;
