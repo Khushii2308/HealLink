@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   AppBar, Toolbar, Typography, Button, Box, Container,
   TextField, IconButton, Grid, Switch, useTheme, Paper, Avatar, Tooltip
 } from '@mui/material';
-import MicIcon from '@mui/icons-material/Mic';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import LightModeIcon from '@mui/icons-material/LightMode';
+import MicIcon from '@mui/icons-material/Mic'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom'
+import useSpeechToText from '../hooks/useSpeechToText';
+
 
 const Home = ({ toggleTheme }) => {
   const theme = useTheme();
@@ -39,11 +41,27 @@ const Home = ({ toggleTheme }) => {
   ];
 
   const handleGetAdvice = () => {
-    if (symptoms.trim()) {
-      navigate('/ai-response', { state: { question: symptoms } });
+    const input = symptoms.trim() || transcript.trim();
+    if (input) {
+      navigate('/ai-response', { state: { question: input } });
+      setSymptoms(''); 
+      resetTranscript(); 
     }
   };
+   const { isListening, transcript, startListening, resetTranscript } = useSpeechToText()
+  const { useEffect } = React
+  useEffect(() => {
+     if (typeof isListening !== 'undefined' && typeof transcript !== 'undefined') {
+      if (!isListening && transcript) {
+        setSymptoms(transcript);
+      }
+     }
+   
+  }, [isListening, transcript]);
 
+  
+
+  
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', color: 'text.primary' }}>
       {/* Header */}
@@ -95,27 +113,55 @@ const Home = ({ toggleTheme }) => {
                     
                    </ul>
                </Typography>
-              <TextField
-                fullWidth
-                placeholder="Type or speak your symptoms..."
-                variant="outlined"
-                multiline
-                rows={4}
-                value={symptoms}
-                onChange={(e) => setSymptoms(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton>
-                      <MicIcon />
-                    </IconButton>
-                  ),
-                }}
-                sx={{ mb: 2 }}
-              />
+               <TextField
+                 fullWidth
+                 placeholder="Type or speak your symptoms..."
+                 variant="outlined"
+                 multiline
+                 rows={4}
+                 value={transcript || symptoms}
+                 onChange={(e) => {
+                    setSymptoms(e.target.value);
+                    resetTranscript();
+                 }}
+                 InputProps={{
+                   endAdornment: (
+                     <IconButton
+                       color={isListening ? "error" : "primary"}
+                       onClick={() => {
+                         startListening();
+                       }}
+                     >
+                       <MicIcon
+                         color={isListening ? "error" : "primary"}
+                        />
+                     </IconButton>
+                   ),
+                 }}
+                 sx={{ mb: 2 }}
+               />
 
-              <Button fullWidth variant="contained" sx={{ mb: 1 }} onClick={handleGetAdvice}>
-                GET ADVICE
-              </Button>
+               {/* 🗣️ Show Live Transcript when listening */}
+               {isListening && (
+                 <Paper
+                   elevation={1}
+                   sx={{
+                     p: 2,
+                     mb: 2,
+                     borderLeft: '5px solid #1976D2',
+                     backgroundColor: 'background.paper',
+                   }}
+                 >
+                   <Typography variant="subtitle2" color="text.secondary">
+                     Listening...
+                   </Typography>
+                   <Typography variant="body2">{transcript}</Typography>
+                 </Paper>
+               )}
+
+               <Button fullWidth variant="contained" sx={{ mb: 1 }} onClick={handleGetAdvice}>
+                 GET ADVICE
+               </Button>
             </Paper>
           </Grid>
 
