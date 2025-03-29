@@ -21,7 +21,7 @@ HealLink AI is a smart healthcare assistant that provides AI-driven health advic
 - Google Cloud Translation API (for Hindi translation)
 
 ## 📂 Project Structure
-
+```
 src/
 ├── App.jsx
 ├── main.jsx
@@ -35,7 +35,7 @@ src/
 │   ├── gemini.js
 │   └── translate.js
 └── assets/
-
+```
 
 ## 🔧 Getting Started
 
