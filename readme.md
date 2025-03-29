@@ -69,11 +69,10 @@ npm run dev
 
 ##  Screenshots
 
-<img src="Screenshot/homePagelight.png" width="33%" />
-<img src="Screenshot/Consultations.png" width="33%" />
-<img src="Screenshot/DoctorsPage.png" width="33%" />
-<img src="Screenshot/ConsultationsLight.png" width="33%" />
-<img src="screenshots/selectingdoctor" width="33%" />
+<img src="Screenshot/homePagelight.png" width="33%" /><img src="Screenshot/Consultations.png" width="33%" /><img src="Screenshot/DoctorsPage.png" width="33%" />
+
+<img src="Screenshot/ConsultationsLight.png" width="33%" /><img src="Screenshot/selectingdoctor.png" width="33%" />
+
 
 
 
