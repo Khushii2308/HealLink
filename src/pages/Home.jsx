@@ -71,7 +71,6 @@ const Home = ({ toggleTheme }) => {
             HeaLink<span style={{ color: '#1976D2' }}>AI</span>
           </Typography>
           <Box>
-            <Button color="inherit" onClick={() => navigate('/')}>Home</Button>
             <Button color="inherit" onClick={() => navigate('/remote-doctor')}>Remote Doctor</Button>
           </Box>
           <Tooltip title="Toggle Dark/Light Theme">
