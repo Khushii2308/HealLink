@@ -116,9 +116,6 @@ const Home = ({ toggleTheme }) => {
               <Button fullWidth variant="contained" sx={{ mb: 1 }} onClick={handleGetAdvice}>
                 GET ADVICE
               </Button>
-              <Button fullWidth variant="outlined">
-                CONNECT TO A DOCTOR
-              </Button>
             </Paper>
           </Grid>
 

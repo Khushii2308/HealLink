@@ -22,7 +22,6 @@ HealLink AI is a smart healthcare assistant that provides AI-driven health advic
 
 ## 📂 Project Structure
 
-```
 src/
 ├── App.jsx
 ├── main.jsx
@@ -36,7 +35,6 @@ src/
 │   ├── gemini.js
 │   └── translate.js
 └── assets/
-```
 
 ## 🔧 Getting Started
 
@@ -81,6 +79,5 @@ Built for a GDG hackathon to help underserved communities get fast, AI-driven he
 
 Pull requests and feedback are welcome!
 
----
 
 Made with ❤️ by Ayush Yadav
