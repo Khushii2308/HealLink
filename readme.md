@@ -70,19 +70,19 @@ npm run dev
 ##  Screenshots
 
 ###  Home Page
-![Home Page](Screenshot/homePagelight.png)
+![Home Page] <img src="Screenshot/homePagelight.png" width="33%" />
 
 ###  AI Consultation
-![AI Consultation](Screenshot/Consultations.png)
+![AI Consultation]<img src="Screenshot/Consultations.png" width="33%" />
 
 ###  Doctor Booking
-![Doctor Booking](Screenshot/DoctorsPage.png)
+![Doctor Booking]<img src="Screenshot/DoctorsPage.png" width="33%" />
 
 ###  Translations
-![Voice Input](Screenshot/ConsultationsLight.png)
+![Voice Input]<img src="Screenshot/ConsultationsLight.png" width="33%" />
 
 ###  Doctor Filtering
-![AI Results](screenshots/results.png)
+![AI Results] <img src="screenshots/selectingdoctor" width="33%" />
 
 
 
