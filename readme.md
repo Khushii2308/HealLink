@@ -1,4 +1,4 @@
-# 🩺 HealLink AI
+#  HealLink AI
 
 HealLink AI is a smart healthcare assistant that provides AI-driven health advice and doctor recommendations. It supports multilingual responses (English and Hindi), theme toggling (light/dark), and a clean animated UI. Built with React, MUI, Framer Motion, and Gemini AI.
 
@@ -67,28 +67,26 @@ VITE_GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
 npm run dev
 ```
 
-## ✨ Screenshots
+##  Screenshots
 
-## 🏥 Home Page
-![Home Page](screenshots/home.png)
+###  Home Page
+![Home Page](Screenshot/homePagelight.png)
 
-## 🔍 AI Consultation
-![AI Consultation](screenshots/ai-consultation.png)
+###  AI Consultation
+![AI Consultation](Screenshot/Consultations.png)
 
-## 📅 Doctor Booking
-![Doctor Booking](screenshots/booking.png)
+###  Doctor Booking
+![Doctor Booking](Screenshot/DoctorsPage.png)
 
-## 🗣️ Voice Input
-![Voice Input](screenshots/voice.png)
+###  Translations
+![Voice Input](Screenshot/ConsultationsLight.png)
 
-## 🧠 AI Results
+###  Doctor Filtering
 ![AI Results](screenshots/results.png)
 
-## 👨‍⚕️ Doctor Profiles
-![Doctor Profiles](screenshots/doctors.png)
 
 
-## 🧠 Inspiration
+##  Inspiration
 
 Built for a GDG hackathon to help underserved communities get fast, AI-driven health insights in multiple languages.
 
