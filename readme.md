@@ -69,8 +69,24 @@ npm run dev
 
 ## ✨ Screenshots
 
-![HealLink Home](screenshots/home.png)
-![Health Assessment](screenshots/assessment.png)
+## 🏥 Home Page
+![Home Page](screenshots/home.png)
+
+## 🔍 AI Consultation
+![AI Consultation](screenshots/ai-consultation.png)
+
+## 📅 Doctor Booking
+![Doctor Booking](screenshots/booking.png)
+
+## 🗣️ Voice Input
+![Voice Input](screenshots/voice.png)
+
+## 🧠 AI Results
+![AI Results](screenshots/results.png)
+
+## 👨‍⚕️ Doctor Profiles
+![Doctor Profiles](screenshots/doctors.png)
+
 
 ## 🧠 Inspiration
 
