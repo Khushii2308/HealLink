@@ -127,8 +127,6 @@ const AIResponse = ({ toggleTheme, mode }) => {
            <Tooltip title="Toggle Dark/Light Theme">
            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
               
-              <FavoriteIcon sx={{ mr: 1, color: 'primary.main' }} />
-             
               <LightModeIcon sx={{ color: theme.palette.mode === 'light' ? '#FFA500' : 'grey.500' }} />
               <Switch onChange={toggleTheme} checked={theme.palette.mode === 'dark'} />
               <DarkModeIcon sx={{ color: theme.palette.mode === 'dark' ? '#90CAF9' : 'grey.500' }} />

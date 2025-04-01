@@ -1,206 +1,172 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   AppBar, Toolbar, Typography, Button, Box, Container,
-  TextField, IconButton, Grid, Switch, useTheme, Paper, Avatar, Tooltip
+  TextField, IconButton, Grid, Switch, useTheme, Paper, Avatar, Tooltip,
+  Select, MenuItem
 } from '@mui/material';
-import MicIcon from '@mui/icons-material/Mic'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import LightModeIcon from '@mui/icons-material/LightMode'
+import MicIcon from '@mui/icons-material/Mic';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import {  useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import useSpeechToText from '../hooks/useSpeechToText';
+const translations = {
+  English: {
+   welcome: 'Welcome to HealLink AI',
+   revolutionizing: 'Revolutionizing access to healthcare with AI-powered doctor consultations.',
+   dailyAdvice: 'Daily Health Advice:',
+   stayHydrated: 'Stay hydrated and take a walk after sitting for an hour.',
+   drinkWater: 'Drink at least 8 glasses of water daily.',
+   qualitySleep: 'Get 7–9 hours of quality sleep every night.',
+   eatFruits: 'Eat colorful fruits and vegetables.',
+   limitProcessed: 'Limit processed foods and sugary drinks.',
+   symptomsPlaceholder: 'Type or speak your symptoms...',
 
+    getAdvice: 'GET ADVICE',
+    topDoctors: 'Top Doctors',
+    specialty:'Specialty',
+    available: 'Available',
+    busy: 'Busy',
+    remoteDoctor: 'Remote Doctor'
+  },
+   Hindi: {
+   welcome: 'हीललिंक एआई में आपका स्वागत है',
+   revolutionizing: 'एआई-संचालित डॉक्टर परामर्श के साथ स्वास्थ्य सेवा तक पहुंच में क्रांति ला रहे हैं।',
+   dailyAdvice: 'दैनिक स्वास्थ्य सलाह:',
+   stayHydrated: 'हाइड्रेटेड रहें और एक घंटा बैठने के बाद टहलें।',
+   drinkWater: 'रोजाना कम से कम 8 गिलास पानी पिएं।',
+   qualitySleep: 'हर रात 7-9 घंटे की गुणवत्ता वाली नींद लें।',
+   eatFruits: 'रंगीन फल और सब्जियां खाएं।',
+   limitProcessed: 'प्रसंस्कृत खाद्य पदार्थों और मीठे पेय पदार्थों का सेवन सीमित करें।',
+   symptomsPlaceholder: 'अपने लक्षणों को टाइप या बोलें...',
+   getAdvice: 'सलाह प्राप्त करें',
+   topDoctors: 'शीर्ष डॉक्टर',
 
+    specialty:'विशेषज्ञता',
+    available: 'उपलब्ध',
+    busy: 'व्यस्त',
+    remoteDoctor: 'दूरस्थ डॉक्टर',
+  },
+};
 const Home = ({ toggleTheme }) => {
+  const [language, setLanguage] = useState('English')
   const theme = useTheme();
   const navigate = useNavigate();
   const [symptoms, setSymptoms] = useState('');
+  
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
 
   const doctors = [
-    {
-      id: 1,
-      name: 'Dr. Emily Carter',
-      specialty: 'General Medicine',
-      status: 'Available',
-      img: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-    {
-      id: 2,
-      name: 'Dr. Sarah Wilson',
-      specialty: 'Pediatrics',
-      status: 'Busy',
-      img: 'https://randomuser.me/api/portraits/women/68.jpg',
-    },
-    {
-      id: 3,
-      name: 'Dr. Raj Malhotra',
-      specialty: 'Cardiology',
-      status: 'Available',
-      img: 'https://randomuser.me/api/portraits/men/77.jpg',
-    },
+    { id: 1, name: 'Dr. Emily Carter', specialty: 'General Medicine', status: 'Available', img: 'https://randomuser.me/api/portraits/women/44.jpg' },
+    { id: 2, name: 'Dr. Sarah Wilson', specialty: 'Pediatrics', status: 'Busy', img: 'https://randomuser.me/api/portraits/women/68.jpg' },
+    { id: 3, name: 'Dr. Raj Malhotra', specialty: 'Cardiology', status: 'Available', img: 'https://randomuser.me/api/portraits/men/77.jpg' },
   ];
+
+  const { isListening, transcript, startListening, resetTranscript } = useSpeechToText();
+  useEffect(() => {
+    if (!isListening && transcript) {
+      setSymptoms(transcript);
+    }
+  }, [isListening, transcript]);
+  
 
   const handleGetAdvice = () => {
     const input = symptoms.trim() || transcript.trim();
     if (input) {
       navigate('/ai-response', { state: { question: input } });
-      setSymptoms(''); 
-      resetTranscript(); 
+      setSymptoms('');
+      resetTranscript();
     }
   };
-   const { isListening, transcript, startListening, resetTranscript } = useSpeechToText()
-  const { useEffect } = React
-  useEffect(() => {
-     if (typeof isListening !== 'undefined' && typeof transcript !== 'undefined') {
-      if (!isListening && transcript) {
-        setSymptoms(transcript);
-      }
-     }
-   
-  }, [isListening, transcript]);
 
-  
-
+  const currentTranslations = translations[language] || translations['English'];
   
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', color: 'text.primary' }}>
-      {/* Header */}
       <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            HeaLink<span style={{ color: '#1976D2' }}>AI</span>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' ,cursor:'pointer'}} onClick={()=>{navigate('/')}}>
+            HealLink
+            <span style={{ color: '#1976D2' }}>AI</span>
           </Typography>
-          <Box>
-            <Button color="inherit" onClick={() => navigate('/remote-doctor')}>Remote Doctor</Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Tooltip title="Select Language">
+             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Select value={language} onChange={handleLanguageChange} sx={{ height: 30, mr: 2 }} size="small">
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="Hindi">Hindi</MenuItem>
+                </Select>
+              </Box>
+            </Tooltip>
+           
+            <Button sx={{ color: '#1976D2' }} onClick={() => navigate('/remote-doctor')}>{currentTranslations.remoteDoctor}</Button>
+            <Tooltip title="Toggle Dark/Light Theme">
+               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <LightModeIcon sx={{ color: theme.palette.mode === 'light' ? '#FFA500' : 'grey.500' }} />
+                <Switch onChange={toggleTheme} checked={theme.palette.mode === 'dark'} />
+                <DarkModeIcon sx={{ color: theme.palette.mode === 'dark' ? '#90CAF9' : 'grey.500' }} />
+              </Box>
+            </Tooltip>
           </Box>
-          <Tooltip title="Toggle Dark/Light Theme">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <LightModeIcon sx={{ color: theme.palette.mode === 'light' ? '#FFA500' : 'grey.500' }} />
-              <Switch onChange={toggleTheme} checked={theme.palette.mode === 'dark'} />
-              <DarkModeIcon sx={{ color: theme.palette.mode === 'dark' ? '#90CAF9' : 'grey.500' }} />
-            </Box>
-          </Tooltip>
         </Toolbar>
       </AppBar>
 
-      {/* Hero Section */}
       <Container maxWidth="md" sx={{ mt: 10, textAlign: 'center' }}>
-        <Typography variant="h2" gutterBottom>
-          Welcome to HeaLink AI
+        <Typography variant="h2" gutterBottom sx={{ fontWeight: 750, textTransform: 'uppercase', fontFamily: 'system-ui' }}>
+        {currentTranslations.welcome}
         </Typography>
         <Typography variant="body1" sx={{ mb: 4 }}>
-          Revolutionizing access to healthcare with AI-powered doctor consultations.
+        {currentTranslations.revolutionizing}
         </Typography>
       </Container>
-
-      {/* Main Content */}
+      
       <Box sx={{ p: 3 }}>
         <Grid container spacing={4}>
-          {/* Left: AI Health Advice */}
           <Grid item xs={12} md={8}>
             <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-              <Typography variant="h5" sx={{ color: 'text.secondary', mb: 2 }}>
-                Daily Health Advice:
-              </Typography>
-              <Typography variant="body1" component="div" sx={{ mb: 2 }}>
-                    <ul style={{ paddingLeft: '1.2em', margin: 0 }}>
-                    <li>Stay hydrated and take a walk after sitting for an hour.</li>
-                    <li>Drink at least 8 glasses of water daily to stay hydrated.</li>
-                    <li>Get 7–9 hours of quality sleep every night for proper recovery.</li>
-                    <li>Take a 5-minute walk every hour if you sit for long periods.</li>
-                    <li>Eat colorful fruits and vegetables — they’re packed with antioxidants.</li>
-                    
-                   </ul>
-               </Typography>
-               <TextField
+              <Typography variant="h5" sx={{ mb: 2 }}>Daily Health Advice:</Typography>
+              <ul>
+                  <li>{currentTranslations.stayHydrated}</li>
+                  <li>{currentTranslations.drinkWater}</li>
+                  <li>{currentTranslations.qualitySleep}</li>
+                  <li>{currentTranslations.eatFruits}</li>
+                  <li>{currentTranslations.limitProcessed}</li>
+                </ul>
+              <TextField
                  fullWidth
-                 placeholder="Type or speak your symptoms..."
+                 placeholder={currentTranslations.symptomsPlaceholder}
                  variant="outlined"
                  multiline
-                 rows={4}
-                 value={transcript || symptoms}
-                 onChange={(e) => {
-                    setSymptoms(e.target.value);
-                    resetTranscript();
-                 }}
-                 InputProps={{
-                   endAdornment: (
-                     <IconButton
-                       color={isListening ? "error" : "primary"}
-                       onClick={() => {
-                         startListening();
-                       }}
-                     >
-                       <MicIcon
-                         color={isListening ? "error" : "primary"}
-                        />
-                     </IconButton>
-                   ),
-                 }}
-                 sx={{ mb: 2 }}
-               />
-
-               {/* 🗣️ Show Live Transcript when listening */}
-               {isListening && (
-                 <Paper
-                   elevation={1}
-                   sx={{
-                     p: 2,
-                     mb: 2,
-                     borderLeft: '5px solid #1976D2',
-                     backgroundColor: 'background.paper',
-                   }}
-                 >
-                   <Typography variant="subtitle2" color="text.secondary">
-                     Listening...
-                   </Typography>
-                   <Typography variant="body2">{transcript}</Typography>
-                 </Paper>
-               )}
-
-               <Button fullWidth variant="contained" sx={{ mb: 1 }} onClick={handleGetAdvice}>
-                 GET ADVICE
-               </Button>
+                rows={5}
+                value={transcript || symptoms}
+                onChange={(e) => { setSymptoms(e.target.value); resetTranscript(); }}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton color={isListening ? "error" : "primary"} onClick={startListening}>
+                      <MicIcon color={isListening ? "error" : "primary"} />
+                    </IconButton>
+                  ),
+                }}
+                sx={{ mb: 3 }}
+              />
+              <Button fullWidth variant="contained" sx={{ mb: 1 }} onClick={handleGetAdvice}>
+                {currentTranslations.getAdvice}
+              </Button>
             </Paper>
           </Grid>
-
-          {/* Right: Top Doctors in a Box */}
           <Grid item xs={12} md={4}>
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Top Doctors
-              </Typography>
+            <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}><Typography variant="h6" sx={{ mb: 2 }}>{currentTranslations.topDoctors}</Typography>
               {doctors.map((doc) => (
-                <Paper
-                  key={doc.id}
-                  elevation={1}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    p: 2,
-                    mb: 2,
-                    borderRadius: 2,
-                    backgroundColor: 'background.paper',
-                  }}
-                >
-                  <Avatar src={doc.img} alt={doc.name} sx={{ width: 56, height: 56, mr: 2 }} />
+                <Paper key={doc.id} elevation={1} sx={{ display: 'flex', alignItems: 'center', p: 2, mb: 2, borderRadius: 2 }}>
+                  <Avatar src={doc.img} alt={doc.name} sx={{ width: 56,  height: 56, mr: 2, borderRadius: 3 }} />
                   <Box>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                      {doc.name}{' '}
-                      <CheckCircleIcon
-                        fontSize="small"
-                        sx={{ color: 'green', verticalAlign: 'middle', ml: 0.5 }}
-                      />
+                      {doc.name} <CheckCircleIcon fontSize="small" sx={{ color: 'green', verticalAlign: 'middle', ml: 0.5 }} />
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {doc.specialty}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: doc.status === 'Available' ? 'green' : 'orange' }}
-                    >
-                      {doc.status}
-                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>{currentTranslations.specialty}</Typography>
+                    <Typography variant="body2" sx={{ color: doc.status === 'Available' ? 'green' : 'orange' }}>{doc.status ==='Available'? currentTranslations.available :currentTranslations.busy }</Typography>
                   </Box>
                 </Paper>
               ))}
@@ -212,4 +178,4 @@ const Home = ({ toggleTheme }) => {
   );
 };
 
-export default Home;
+export default Home
