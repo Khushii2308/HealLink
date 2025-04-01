@@ -48,7 +48,7 @@ const AIResponse = ({ toggleTheme, mode }) => {
       consultDoctor: 'Please consider consulting a healthcare professional.',
       talkToDoctor: 'Talk to a Doctor',
       backToHome: 'Back to Home',
-      consultSpecialist: (specialty) => `Please consider consulting a ${specialty}.`
+      consultSpecialist: (specialty) => specialty ? `Please consider consulting a ${specialty}.`:''
     },
     hi: {
       healthAssessment: 'हेल्थ अस्सेसमेंट',
@@ -58,10 +58,10 @@ const AIResponse = ({ toggleTheme, mode }) => {
       consultDoctor: 'कृपया किसी डॉक्टर से सलाह लें।',
       talkToDoctor: 'डॉक्टर से बात करें',
       backToHome: 'मुखपृष्ठ पर वापस जाएं',
-      consultSpecialist: (specialty) => `कृपया एक ${specialty} से परामर्श करने पर विचार करें।`
+      consultSpecialist: (specialty) => specialty ? `कृपया एक ${specialty} से परामर्श करने पर विचार करें।`: ''
     }
   };
-
+  
   const isHindi = selectedLang === 'Hindi';
 
   useEffect(() => {
@@ -198,15 +198,15 @@ const AIResponse = ({ toggleTheme, mode }) => {
                   {display.advice}
                 </Typography>
 
-                {display.shouldSeeDoctor ? (
+                  {typeof display.shouldSeeDoctor === 'string' && display.shouldSeeDoctor.length > 0 ? (
                   <Typography sx={{ mt: 2, color: 'error.main', fontWeight: 'bold' }}>
-                    {typeof display.shouldSeeDoctor === 'string' ? (
-                      isHindi ? translations.hi.consultSpecialist(display.shouldSeeDoctor) : translations.en.consultSpecialist(display.shouldSeeDoctor)
-                    ) : (
-                      isHindi ? translations.hi.consultDoctor : translations.en.consultDoctor
-                    )}
+                    {isHindi
+                      ? translations.hi.consultSpecialist(display.shouldSeeDoctor)
+                      : translations.en.consultSpecialist(display.shouldSeeDoctor)}
                   </Typography>
-                ) : (
+                ) : display.shouldSeeDoctor ?(
+                   <Typography sx={{ mt: 2, color: 'error.main', fontWeight: 'bold' }}>
+                    {isHindi ? translations.hi.consultDoctor : translations.en.consultDoctor} </Typography> ):(
                   <Typography sx={{ mt: 2, color: 'green.main', fontWeight: 'bold' }}>
                     {isHindi ? 'चिंता न करें , आपको डॉक्टर से मिलने की ज़रूरत नहीं है।' : 'You may not need to see a doctor.'}
                   </Typography>
