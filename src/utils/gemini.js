@@ -17,13 +17,13 @@ const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 export async function getHealthAdvice(question) {
   try {
     const prompt = `
-You are an AI medical assistant. Based on the following user question, respond ONLY in pure JSON format (no markdown, no commentary). Use this structure:
+You are an AI medical assistant. Based on the following user question, respond ONLY in pure JSON format (no markdown, no commentary). If the advice suggests seeing a doctor, the \`shouldSeeDoctor\` field should contain a string with the recommended specialty (e.g., "General Physician", "Dermatologist"). If no doctor visit is needed, the field should be \`null\`. Use this structure:
 
 {
   "issue": "short condition name",
   "urgency": "Low | Moderate | High",
   "advice": "2-3 sentences of helpful advice",
-  "shouldSeeDoctor": true/false
+  "shouldSeeDoctor": "null | specific doctor specialty"
 }
 
 User's question: ${question}
@@ -51,7 +51,7 @@ User's question: ${question}
     const issue = parsed.issue?.trim();
     const urgency = parsed.urgency?.trim();
     const advice = parsed.advice?.trim();
-    const shouldSeeDoctor = parsed.shouldSeeDoctor === true;
+    const shouldSeeDoctor = parsed.shouldSeeDoctor === null ? null : parsed.shouldSeeDoctor;
 
     if (!issue || !advice) {
       throw new Error("Incomplete data in Gemini response");
@@ -72,7 +72,7 @@ User's question: ${question}
       issue: "Health Check Failed",
       urgency: "Unknown",
       advice: `We couldn't analyze your question at the moment. Please try again or consult a medical professional.`,
-      shouldSeeDoctor: true,
+      shouldSeeDoctor: "General Physician",
     };
   }
 }

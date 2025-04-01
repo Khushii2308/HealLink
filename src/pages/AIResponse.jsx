@@ -27,72 +27,94 @@ import { translateToHindi } from '../utils/translate';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { lightTheme, darkTheme } from '../theme';
 import Switch from '@mui/material/Switch';
- 
+
 const AIResponse = ({ toggleTheme, mode }) => {
   const location = useLocation();
   const { question, language } = location.state || {};
 
   const theme = mode === 'light' ? lightTheme : darkTheme;
   const [assessment, setAssessment] = useState(null);
-  const [translated, setTranslated] = useState(null)
-  const [error, setError] = useState(null)
-  const [selectedLang, setSelectedLang] = useState(language || 'English')
-  const [isTranslating, setIsTranslating] = useState(false)
+  const [translated, setTranslated] = useState(null);
+  const [error, setError] = useState(null);
+  const [selectedLang, setSelectedLang] = useState(language || 'English');
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  const translations = {
+    en: {
+      healthAssessment: 'Health Assessment',
+      suggestedIssue: 'Suggested Health Issue:',
+      urgencyLevel: 'Urgency Level:',
+      actionableAdvice: 'Actionable Advice',
+      consultDoctor: 'Please consider consulting a healthcare professional.',
+      talkToDoctor: 'Talk to a Doctor',
+      backToHome: 'Back to Home',
+      consultSpecialist: (specialty) => `Please consider consulting a ${specialty}.`
+    },
+    hi: {
+      healthAssessment: 'हेल्थ अस्सेसमेंट',
+      suggestedIssue: 'संभावित समस्या:',
+      urgencyLevel: 'गंभीरता स्तर:',
+      actionableAdvice: 'सलाह:',
+      consultDoctor: 'कृपया किसी डॉक्टर से सलाह लें।',
+      talkToDoctor: 'डॉक्टर से बात करें',
+      backToHome: 'मुखपृष्ठ पर वापस जाएं',
+      consultSpecialist: (specialty) => `कृपया एक ${specialty} से परामर्श करने पर विचार करें।`
+    }
+  };
 
   const isHindi = selectedLang === 'Hindi';
 
   useEffect(() => {
     async function fetchAdvice() {
-      if (!question) return
+      if (!question) return;
 
       try {
-        setError(null)
-        const result = await getHealthAdvice(question)
-        setAssessment(result)
+        setError(null);
+        const result = await getHealthAdvice(question);
+        setAssessment(result);
 
         if (isHindi && !translated) {
-          await handleTranslation(result)
+          await handleTranslation(result);
         }
       } catch (err) {
-        console.error('Error getting health advice:', err)
-        setError('Sorry, we encountered an error while generating health advice. Please try again later.')
+        console.error('Error getting health advice:', err);
+        setError('Sorry, we encountered an error while generating health advice. Please try again later.');
       }
     }
 
-    fetchAdvice()
-    
-  }, [question])
+    fetchAdvice();
+  }, [question]);
 
   const handleTranslation = async (data = assessment) => {
     try {
-      setIsTranslating(true)
-      const translatedIssue = await translateToHindi(data.issue)
-      const translatedAdvice = await translateToHindi(data.advice)
+      setIsTranslating(true);
+      const translatedIssue = await translateToHindi(data.issue);
+      const translatedAdvice = await translateToHindi(data.advice);
 
       setTranslated({
         issue: translatedIssue,
         advice: translatedAdvice,
         urgency: data.urgency,
         shouldSeeDoctor: data.shouldSeeDoctor,
-      })
+      });
     } catch (err) {
-      console.error('Translation failed:', err)
-      setError('Translation failed. Please try again.')
+      console.error('Translation failed:', err);
+      setError('Translation failed. Please try again.');
     } finally {
-      setIsTranslating(false)
+      setIsTranslating(false);
     }
-  }
+  };
 
   const handleLanguageChange = async (_, newLang) => {
-    if (!newLang) return
-    setSelectedLang(newLang)
+    if (!newLang) return;
+    setSelectedLang(newLang);
 
     if (newLang === 'Hindi' && !translated) {
-      await handleTranslation()
+      await handleTranslation();
     }
-  }
+  };
 
-  const display = isHindi && translated ? translated : assessment
+  const display = isHindi && translated ? translated : assessment;
 
   if (!assessment && !error) {
     return (
@@ -100,7 +122,7 @@ const AIResponse = ({ toggleTheme, mode }) => {
         <CircularProgress />
         <Typography sx={{ mt: 2 }}>Analyzing your health concern...</Typography>
       </Box>
-    )
+    );
   }
 
   if (error) {
@@ -108,111 +130,109 @@ const AIResponse = ({ toggleTheme, mode }) => {
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography color="error">{error}</Typography>
       </Box>
-    )
+    );
   }
 
   return (
-    
     <ThemeProvider theme={theme}>
-        <CssBaseline />
-      
+      <CssBaseline />
       <Box>
         <AppBar position="static" color="transparent" elevation={0}>
           <Toolbar sx={{ justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-             <Typography variant="h6" sx={{ fontWeight: 'bold', p: 1 }}>
-              HeaLink<span style={{ color: '#1976D2' }}>AI</span>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', p: 1 }}>
+                HeaLink<span style={{ color: '#1976D2' }}>AI</span>
               </Typography>
             </Box>
-           <Tooltip title="Toggle Dark/Light Theme">
-           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
-              
-              <LightModeIcon sx={{ color: theme.palette.mode === 'light' ? '#FFA500' : 'grey.500' }} />
-              <Switch onChange={toggleTheme} checked={theme.palette.mode === 'dark'} />
-              <DarkModeIcon sx={{ color: theme.palette.mode === 'dark' ? '#90CAF9' : 'grey.500' }} />
-            </Box>
-          </Tooltip>
-
+            <Tooltip title="Toggle Dark/Light Theme">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
+                <LightModeIcon sx={{ color: theme.palette.mode === 'light' ? '#FFA500' : 'grey.500' }} />
+                <Switch onChange={toggleTheme} checked={theme.palette.mode === 'dark'} />
+                <DarkModeIcon sx={{ color: theme.palette.mode === 'dark' ? '#90CAF9' : 'grey.500' }} />
+              </Box>
+            </Tooltip>
           </Toolbar>
         </AppBar>
-        <Box sx={{ maxWidth: 800, mx: 'auto',  backgroundColor: 'background.default', color: 'text.primary', p: 2 }}>
-        
+        <Box sx={{ maxWidth: 800, mx: 'auto', backgroundColor: 'background.default', color: 'text.primary', p: 2 }}>
           {/* Language Toggle */}
-      <ToggleButtonGroup
-        value={selectedLang}
-        exclusive
-        onChange={handleLanguageChange}
-        sx={{ mb: 3 }}
-      >
-        <ToggleButton value="English">English</ToggleButton>
-        <ToggleButton value="Hindi">हिन्दी</ToggleButton>
-      </ToggleButtonGroup>
+          <ToggleButtonGroup
+            value={selectedLang}
+            exclusive
+            onChange={handleLanguageChange}
+            sx={{ mb: 3 }}
+          >
+            <ToggleButton value="English">English</ToggleButton>
+            <ToggleButton value="Hindi">हिन्दी</ToggleButton>
+          </ToggleButtonGroup>
 
-      {/* Content Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Card elevation={3} sx={{ borderRadius: 4, p: 2 }}>
-          <CardContent>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-              {isHindi ? 'हेल्थ अस्सेसमेंट' : 'Health Assessment'}
-            </Typography>
+          {/* Content Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card elevation={3} sx={{ borderRadius: 4, p: 2 }}>
+              <CardContent>
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                  {isHindi ? translations.hi.healthAssessment : translations.en.healthAssessment}
+                </Typography>
 
-            <Typography variant="h6">
-              {isHindi ? 'संभावित समस्या:' : 'Suggested Health Issue:'} {display.issue}
-            </Typography>
+                <Typography variant="h6">
+                  {isHindi ? translations.hi.suggestedIssue : translations.en.suggestedIssue} {display.issue}
+                </Typography>
 
-            <Typography
-              variant="subtitle1"
-              sx={{ color: display.urgency === 'High' ? 'error.main' : 'text.secondary', mb: 2 }}
-            >
-              {isHindi ? 'गंभीरता स्तर:' : 'Urgency Level:'} {display.urgency}
-            </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ color: display.urgency === 'High' ? 'error.main' : 'text.secondary', mb: 2 }}
+                >
+                  {isHindi ? translations.hi.urgencyLevel : translations.en.urgencyLevel} {display.urgency}
+                </Typography>
 
-            <Divider sx={{ my: 2 }} />
+                <Divider sx={{ my: 2 }} />
 
-            <Typography variant="h6">
-              {isHindi ? 'सलाह:' : 'Actionable Advice'}
-            </Typography>
+                <Typography variant="h6">
+                  {isHindi ? 'सलाह:' : 'Actionable Advice'}
+                </Typography>
 
-            <Typography variant="body1" sx={{ mt: 1 }}>
-              {display.advice}
-            </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  {display.advice}
+                </Typography>
 
-            {display.shouldSeeDoctor && (
-              <Typography sx={{ mt: 2, color: 'error.main', fontWeight: 'bold' }}>
-                {isHindi
-                  ? 'कृपया किसी डॉक्टर से सलाह लें।'
-                  : 'Please consider consulting a healthcare professional.'}
-              </Typography>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
+                {display.shouldSeeDoctor ? (
+                  <Typography sx={{ mt: 2, color: 'error.main', fontWeight: 'bold' }}>
+                    {typeof display.shouldSeeDoctor === 'string' ? (
+                      isHindi ? translations.hi.consultSpecialist(display.shouldSeeDoctor) : translations.en.consultSpecialist(display.shouldSeeDoctor)
+                    ) : (
+                      isHindi ? translations.hi.consultDoctor : translations.en.consultDoctor
+                    )}
+                  </Typography>
+                ) : (
+                  <Typography sx={{ mt: 2, color: 'green.main', fontWeight: 'bold' }}>
+                    {isHindi ? 'चिंता न करें , आपको डॉक्टर से मिलने की ज़रूरत नहीं है।' : 'You may not need to see a doctor.'}
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Button variant="contained" href="/remote-doctor">
-          {isHindi ? 'डॉक्टर से बात करें' : 'Talk to a Doctor'}
-        </Button>
-      </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-       <Button variant="outlined" href="/">
-        {isHindi ? 'मुखपृष्ठ पर वापस जाएं' : 'Back to Home'}
-           </Button>
-            </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Button variant="contained" href="/remote-doctor">
+              {isHindi ? translations.hi.talkToDoctor : translations.en.talkToDoctor}
+            </Button>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Button variant="outlined" href="/">
+              {isHindi ? translations.hi.backToHome : translations.en.backToHome}
+            </Button>
+          </Box>
 
-
-      <Typography variant="body2" textAlign="center" sx={{ mt: 4, color: 'text.secondary' }}>
-        Powered by HealLink AI
-      </Typography>
+          <Typography variant="body2" textAlign="center" sx={{ mt: 4, color: 'text.secondary' }}>
+            Powered by HealLink AI
+          </Typography>
         </Box>
       </Box>
-       
     </ThemeProvider>
-     
-   );
+  );
 };
 
 export default AIResponse;
