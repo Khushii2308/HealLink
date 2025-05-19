@@ -1,6 +1,6 @@
 #  HealLink AI
 
-HealLink AI is a smart healthcare assistant that provides AI-driven health advice and doctor recommendations. It supports multilingual responses (English and Hindi), theme toggling (light/dark), and a clean animated UI. Built with React, MUI, Framer Motion, and Gemini AI.
+HealLink AI is a smart healthcare assistant that provides AI-driven health advice and doctor recommendations. It supports multilingual responses (English and Hindi), theme toggling (light/dark), and a clean animated UI. Built with React, MUI, Framer Motion, and Gemini AI. 
 
 ## 🚀 Features
 
