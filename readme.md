@@ -75,13 +75,8 @@ npm run dev
 
 
 
-
-##  Inspiration
-
-Built for a GDG hackathon to help underserved communities get fast, AI-driven health insights in multiple languages.
-
 ## 📬 Feedback
 
 Pull requests and feedback are welcome!
 
-Made with ❤️ by Ayush Yadav
+Made with ❤️ by Khushi Bansal
